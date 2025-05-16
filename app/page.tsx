@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Clock, Droplets, RefreshCcw, X } from "lucide-react"
+import { Clock, Droplets, RefreshCcw } from "lucide-react"
 import { Search, Heart, Edit } from "lucide-react"
 import { Filter, Menu, DoorClosedIcon as CloseIcon, Home } from "lucide-react"
 import { Alice } from "next/font/google"
@@ -677,15 +677,13 @@ export default function BotaniqApp() {
   const displayPlantsToShow = () => {
     let plantsToDisplay: Houseplant[] = []
 
-    // Use currentFilter to determine filter
-    if (currentFilter === "favorites") {
-      plantsToDisplay = houseplants.filter((plant) => favorites.includes(plant.name))
-    } else if (currentFilter === "all") {
-      plantsToDisplay = houseplants
-    } else if (searchQuery && filteredPlants.length > 0) {
+    // First determine the base set of plants
+    if (searchQuery && filteredPlants.length > 0) {
       plantsToDisplay = filteredPlants
     } else if (searchQuery && filteredPlants.length === 0) {
       return []
+    } else if (favorites.length > 0 && window.location.hash === "#favorites") {
+      plantsToDisplay = houseplants.filter((plant) => favorites.includes(plant.name))
     } else if (recommendedPlants.length > 0) {
       plantsToDisplay = recommendedPlants
     } else {
@@ -761,16 +759,6 @@ export default function BotaniqApp() {
     }
   }, [showPlantModal])
 
-  const handleFilterClick = (filter: string, e: React.MouseEvent) => {
-    e.preventDefault()
-    setCurrentFilter(filter)
-    window.location.hash = `#${filter}`
-    setSearchQuery("")
-    if (isMobile) {
-      setSidebarOpen(false)
-    }
-  }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#EDF6F9] to-[#83C5BE]">
@@ -808,7 +796,7 @@ export default function BotaniqApp() {
             </div>
 
             {/* Search Bar - Desktop */}
-  <div className="hidden md:block flex-1 max-w-md mx-4">
+            <div className="hidden md:block flex-1 max-w-md mx-4">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-4 w-4 text-gray-400" />
@@ -873,17 +861,23 @@ export default function BotaniqApp() {
             <div className="hidden md:flex items-center space-x-4">
               <a
                 href="#all"
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-[#EDF6F9] text-[#006D77] ${currentFilter === "all" ? "bg-[#006D77]" : ""
-                  }`}
-                onClick={(e) => handleFilterClick("all", e)}
+                className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-[#EDF6F9] text-[#006D77]"
+                onClick={(e) => {
+                  e.preventDefault()
+                  window.location.hash = "#all"
+                  setSearchQuery("")
+                }}
               >
                 All Plants
               </a>
               <a
                 href="#favorites"
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-[#EDF6F9] flex items-center text-[#006D77] ${currentFilter === "favorites" ? "bg-[#006D77]" : ""
-                  }`}
-                onClick={(e) => handleFilterClick("favorites", e)}
+                className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-[#EDF6F9] flex items-center text-[#006D77]"
+                onClick={(e) => {
+                  e.preventDefault()
+                  window.location.hash = "#favorites"
+                  setSearchQuery("")
+                }}
               >
                 <Heart className="w-4 h-4 mr-1" />
                 Favorites ({favorites.length})
@@ -917,38 +911,29 @@ export default function BotaniqApp() {
         <div className="md:hidden flex items-center justify-between px-4 pb-3 border-t border-[#83C5BE] pt-3">
           <a
             href="#all"
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${currentFilter === "all" ? "bg-[#006D77] text-white" : "bg-[#EDF6F9] text-[#006D77]"
-              }`}
-            onClick={(e) => handleFilterClick("all", e)}
+            className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors bg-[#EDF6F9] text-[#006D77]"
+            onClick={(e) => {
+              e.preventDefault()
+              window.location.hash = "#all"
+              setSearchQuery("")
+              setSidebarOpen(false)
+            }}
           >
             All Plants
           </a>
           <a
             href="#favorites"
-            className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors  flex items-center ${currentFilter === "favorites" ? "bg-[#006D77] text-white" : "bg-[#EDF6F9] text-[#006D77]"
-              }`}
-            onClick={(e) => handleFilterClick("favorites", e)}
+            className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors bg-[#EDF6F9] text-[#006D77] flex items-center"
+            onClick={(e) => {
+              e.preventDefault()
+              window.location.hash = "#favorites"
+              setSearchQuery("")
+              setSidebarOpen(false)
+            }}
           >
             <Heart className="w-4 h-4 mr-1" />
             Favorites ({favorites.length})
           </a>
-          {Object.keys(timers).length > 0 && (
-            <a
-              href="#"
-              className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors bg-[#EDF6F9] text-[#006D77] flex items-center"
-              onClick={(e) => {
-                e.preventDefault()
-                // Show a simple alert with active reminders on mobile
-                const reminderText = Object.entries(timers)
-                  .map(([name, seconds]) => `${name}: ${formatTime(seconds)}`)
-                  .join("\n")
-                alert(`Active Reminders:\n${reminderText}`)
-              }}
-            >
-              <Clock className="w-4 h-4 mr-1" />
-              Reminders ({Object.keys(timers).length})
-            </a>
-          )}
         </div>
       </nav>
 
@@ -959,9 +944,8 @@ export default function BotaniqApp() {
     fixed md:static top-0 left-0 z-40 h-screen w-64 md:w-72 pt-20 md:pt-4 pb-4 px-4 
     bg-[#EDF6F9]/95 backdrop-blur-sm shadow-lg md:shadow-none md:translate-x-0 
     transition-transform duration-300 ease-in-out overflow-y-auto`}
-          style={{ height: "100vh", maxHeight: "100vh" }}
         >
-          <div className="space-y-6 mt-14 md:mt-0 pb-20">
+          <div className="space-y-6 mt-14 md:mt-0">
             {/* Sidebar Header */}
             <div className="mb-8">
               <h2 className="text-xl font-semibold text-[#006D77] mb-2">Filters</h2>
