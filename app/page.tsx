@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Clock, Droplets, RefreshCcw, SearchCheck, SearchIcon, X } from "lucide-react"
+import { Clock, Droplets, RefreshCcw, SearchIcon, X } from "lucide-react"
 import { Search, Heart, Edit } from "lucide-react"
 import { Filter, Menu, DoorClosedIcon as CloseIcon, Home } from "lucide-react"
 import { Alice } from "next/font/google"
@@ -972,11 +972,21 @@ export default function BotaniqApp() {
     bg-[#EDF6F9]/95 backdrop-blur-sm shadow-lg md:shadow-none md:translate-x-0 
     transition-transform duration-300 ease-in-out overflow-y-auto`}
         >
-          <div className="space-y-6 mt-14 md:mt-0">
+          <div className="space-y-6 mt-30 md:mt-0">
             {/* Sidebar Header */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold text-[#006D77] mb-2">Filters</h2>
-              <div className="h-1 w-16 bg-gradient-to-r from-[#006D77] to-[#83C5BE] rounded-full"></div>
+            <div className="flex items-center justify-between mb-4">
+              <div >
+                <h2 className="text-xl font-semibold text-[#006D77] mb-2">Filters</h2>
+                <div className="h-1 w-16 bg-gradient-to-r from-[#006D77] to-[#83C5BE] rounded-full"></div>
+              </div>
+
+              <div className="md:hidden flex justify-center">
+                <X
+                  className="bg-[#EDF6F9] text-[#006D77]"
+                  onClick={() => setSidebarOpen(false)}
+                />
+
+              </div>
             </div>
 
             {/* Feeling Filter */}
@@ -1114,15 +1124,7 @@ export default function BotaniqApp() {
               </button>
             </div>
 
-            {/* Mobile Only - Close Sidebar */}
-            <div className="md:hidden flex justify-center mt-4">
-              <button
-                className="px-4 py-2 bg-[#EDF6F9] text-[#E29578] rounded-lg hover:bg-[#EDF6F9]/80 transition-colors"
-                onClick={() => setSidebarOpen(false)}
-              >
-                Close Sidebar
-              </button>
-            </div>
+
           </div>
         </aside>
 
@@ -1136,47 +1138,6 @@ export default function BotaniqApp() {
             >
               <Filter className="h-5 w-5" />
             </button>
-          )}
-
-          {/* Notes by Color Section */}
-          {showNotesByColor && (
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold">Notes by Plant Difficulty</h2>
-                <button
-                  className="text-sm text-[#718355] hover:text-[#87986A]"
-                  onClick={() => setShowNotesByColor(false)}
-                >
-                  Hide
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {Object.entries(getPlantsWithNotes()).map(
-                  ([difficulty, plants]) =>
-                    plants.length > 0 && (
-                      <div
-                        key={difficulty}
-                        className={`p-4 rounded-xl border ${noteColors[difficulty as keyof typeof noteColors]}`}
-                      >
-                        <h3 className="font-bold mb-2">{difficulty}</h3>
-                        <div className="space-y-2">
-                          {plants.map((plant) => (
-                            <div
-                              key={plant.name}
-                              className="p-2 bg-white/80 rounded-lg cursor-pointer hover:bg-white"
-                              onClick={() => handlePlantSelect(plant)}
-                            >
-                              <div className="font-medium">{plant.name}</div>
-                              <div className="text-xs text-gray-600 line-clamp-2">{notes[plant.name]}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ),
-                )}
-              </div>
-            </div>
           )}
 
           {/* Plants Grid */}
@@ -1321,7 +1282,7 @@ export default function BotaniqApp() {
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 bg-white/30 rounded-full p-1.5 sm:p-2 hover:bg-white transition-colors duration-200"
+              className="cursor-pointer absolute top-2 right-2 sm:top-4 sm:right-4 z-10 bg-white/30 rounded-full p-1.5 sm:p-2 hover:bg-white transition-colors duration-200"
               onClick={closeModal}
             >
               <X className="h-5 w-5 text-gray-600" />
@@ -1340,7 +1301,7 @@ export default function BotaniqApp() {
 
                 {/* Mobile-only name overlay */}
                 <div className="md:hidden absolute bottom-0 left-0 right-0 p-4">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{selectedPlant.name}</h2>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-[#006D77] bg-[#EDF6F9]/60 rounded-full w-fit mx-3 px-4 py-1">{selectedPlant.name}</h2>
                   <div className="inline-block mt-2 px-3 py-1 rounded-full bg-[#83C5BE] text-[#006D77] text-sm truncate mx-3">
                     {selectedPlant.difficulty}
                   </div>
