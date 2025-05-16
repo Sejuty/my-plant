@@ -361,7 +361,8 @@ function ThemeProvider({
 
 export default function MyComponentWithThemeProvider() {
   return (
-    <ThemeProvider attribute="class"
+    <ThemeProvider
+      attribute="class"
       defaultTheme="system"
       enableSystem
       disableTransitionOnChange>
@@ -382,10 +383,11 @@ function MyComponent() {
   const [loading, setLoading] = useState(true)
   const [isOpenFeeling, setIsOpenFeeling] = useState(false)
   const [isOpenWeather, setIsOpenWeather] = useState(false)
-  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
+    setTheme(resolvedTheme === "dark" ? "light" : "dark")
   }
 
   useEffect(() => {
@@ -469,6 +471,25 @@ function MyComponent() {
     setSelectedPlant(null)
   }
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (showPlantModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showPlantModal]);
+
+  if (!mounted) {
+    return null;
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-violet-50 to-indigo-100 dark:from-gray-900 dark:to-indigo-950">
@@ -482,24 +503,24 @@ function MyComponent() {
       <div className="max-w-7xl mx-auto p-4 md:p-8">
         <div className="flex flex-col md:flex-row items-center justify-between mb-8">
           <div className="mb-6 md:mb-0 py-6 xl:py-12">
-            <h1 className="text-3xl md:text-5xl font-thin text-gray-900 dark:text-white mb-2">
+            <div className="text-3xl md:text-5xl font-thin text-gray-900 dark:text-white mb-2">
               Houseplant Recommender
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 text-sm">
+            </div>
+            <div className="text-gray-600 dark:text-gray-300 text-sm">
               Find your perfect plant match based on how you feel and the weather
-            </p>
+            </div>
           </div>
-          <button
+          <div
             onClick={toggleTheme}
-            className="p-3 rounded-full bg-white/90 dark:bg-gray-800/90 shadow-md hover:shadow-lg transition-all duration-300 border border-indigo-200 dark:border-indigo-800"
+            className="cursor-pointer p-3 rounded-full bg-white/90 dark:bg-gray-800/90 shadow-md hover:shadow-lg transition-all duration-300 border border-indigo-200 dark:border-indigo-800"
             aria-label="Toggle theme"
           >
-            {theme=='dark' ? (
+            {resolvedTheme == 'dark' ? (
               <Moon className="h-5 w-5 text-indigo-700" />
             ) : (
               <Sun className="h-5 w-5 text-amber-400" />
             )}
-          </button>
+          </div>
         </div>
 
         <div className="flex flex-col items-center">
@@ -507,60 +528,59 @@ function MyComponent() {
             {" "}
             {/* Add z-50 here */}
             <div className="relative w-full md:w-64">
-              <button
-                type="button"
+              <div
+
                 className="w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-indigo-200 dark:border-indigo-800 rounded-xl px-6 py-4 text-left text-gray-900 dark:text-white font-medium flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-300"
                 onClick={() => setIsOpenFeeling(!isOpenFeeling)}
               >
-                <span>{selectedFeeling ? selectedFeeling : `Select Feeling`}</span>
+                <div>{selectedFeeling ? selectedFeeling : `Select Feeling`}</div>
                 <ChevronDown
                   className={`w-5 h-5 ml-2 transition-transform duration-300 ${isOpenFeeling ? "transform rotate-180" : ""}`}
                 />
-              </button>
+              </div>
 
               {isOpenFeeling && (
                 <div className="absolute z-[100] mt-1 w-full bg-white dark:bg-gray-800 border border-indigo-200 dark:border-indigo-800 rounded-xl shadow-lg">
                   {" "}
                   {/* Increase to z-[100] */}
                   {feelings.map((feeling) => (
-                    <button
+                    <div
                       key={feeling.name}
-                      type="button"
+
                       className="w-full text-gray-800 dark:text-gray-200 text-left px-6 py-3 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors duration-200 cursor-pointer border-b border-indigo-100 dark:border-indigo-800 last:border-0"
                       onClick={() => handleFeelingSelect(feeling.name)}
                     >
                       {feeling.name}
-                    </button>
+                    </div>
                   ))}
                 </div>
               )}
             </div>
             <div className="w-4 h-4 bg-indigo-300 dark:bg-indigo-700 rounded-full hidden md:block"></div>
             <div className="relative w-full md:w-64">
-              <button
-                type="button"
+              <div
+
                 className="w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm border border-indigo-200 dark:border-indigo-800 rounded-xl px-6 py-4 text-left text-gray-900 dark:text-white font-medium flex items-center justify-between shadow-sm hover:shadow-md transition-all duration-300"
                 onClick={() => setIsOpenWeather(!isOpenWeather)}
               >
-                <span>{selectedWeather ? selectedWeather : `Select Weather`}</span>
+                <div>{selectedWeather ? selectedWeather : `Select Weather`}</div>
                 <ChevronDown
                   className={`w-5 h-5 ml-2 transition-transform duration-300 ${isOpenWeather ? "transform rotate-180" : ""}`}
                 />
-              </button>
+              </div>
 
               {isOpenWeather && (
                 <div className="absolute z-[100] mt-1 w-full bg-white dark:bg-gray-800 border border-indigo-200 dark:border-indigo-800 rounded-xl shadow-lg">
                   {" "}
                   {/* Increase to z-[100] */}
                   {weatherConditions.map((weather) => (
-                    <button
+                    <div
                       key={weather.name}
-                      type="button"
                       className="w-full text-gray-800 dark:text-gray-200 text-left px-6 py-3 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors duration-200 cursor-pointer border-b border-indigo-100 dark:border-indigo-800 last:border-0"
                       onClick={() => handleWeatherSelect(weather.name)}
                     >
                       {weather.name}
-                    </button>
+                    </div>
                   ))}
                 </div>
               )}
@@ -569,7 +589,7 @@ function MyComponent() {
 
           {isMobile && showDropdowns && (
             <div className="flex gap-2 mb-4">
-              <button
+              <div
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${!selectedFeeling
                   ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300"
                   : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
@@ -577,8 +597,8 @@ function MyComponent() {
                 onClick={() => setIsOpenFeeling(true)}
               >
                 Feeling
-              </button>
-              <button
+              </div>
+              <div
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${!selectedWeather
                   ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300"
                   : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
@@ -586,12 +606,12 @@ function MyComponent() {
                 onClick={() => setIsOpenWeather(true)}
               >
                 Weather
-              </button>
+              </div>
             </div>
           )}
 
           {(selectedFeeling || selectedWeather) && (
-            <button
+            <div
               className="mb-6 flex items-center text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors duration-200 cursor-pointer"
               onClick={resetFilters}
             >
@@ -610,7 +630,7 @@ function MyComponent() {
                 />
               </svg>
               Reset filters
-            </button>
+            </div>
           )}
 
           {recommendedPlants.length > 0 ? (
@@ -635,39 +655,39 @@ function MyComponent() {
 
                   <div className="p-6">
                     <div className="flex justify-between items-start mb-4">
-                      <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{plant.name}</h3>
-                      <span className="text-sm font-medium px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
+                      <div className="text-2xl font-bold text-gray-900 dark:text-white">{plant.name}</div>
+                      <div className="text-sm font-medium px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
                         {plant.difficulty}
-                      </span>
+                      </div>
                     </div>
 
-                    <p className="mb-4 text-gray-600 dark:text-gray-300 line-clamp-2">{plant.description}</p>
+                    <div className="mb-4 text-gray-600 dark:text-gray-300 line-clamp-2">{plant.description}</div>
 
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
                         <Clock className="h-5 w-5 mr-2 text-indigo-500" />
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{plant.waterRequirements}</span>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">{plant.waterRequirements}</div>
                       </div>
                       <div className="flex items-center">
                         <Droplets className="h-5 w-5 mr-2 text-indigo-500" />
-                        <span className="text-sm text-gray-500 dark:text-gray-400">{plant.lightRequirements}</span>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">{plant.lightRequirements}</div>
                       </div>
                     </div>
 
                     <div className="mt-4 flex flex-wrap items-center gap-1">
-                      <span className="text-sm font-medium text-indigo-700 dark:text-indigo-300 mr-2">Benefits:</span>
+                      <div className="text-sm font-medium text-indigo-700 dark:text-indigo-300 mr-2">Benefits:</div>
                       {plant.benefits.slice(0, 2).map((benefit, index) => (
-                        <span
+                        <div
                           key={index}
                           className="inline-flex items-center rounded-full bg-indigo-50 dark:bg-indigo-900/50 px-2 py-1 text-xs font-medium text-indigo-700 dark:text-indigo-300"
                         >
                           {benefit}
-                        </span>
+                        </div>
                       ))}
                       {plant.benefits.length > 2 && (
-                        <span className="inline-flex items-center rounded-full bg-indigo-50 dark:bg-indigo-900/50 px-2 py-1 text-xs font-medium text-indigo-700 dark:text-indigo-300">
+                        <div className="inline-flex items-center rounded-full bg-indigo-50 dark:bg-indigo-900/50 px-2 py-1 text-xs font-medium text-indigo-700 dark:text-indigo-300">
                           +{plant.benefits.length - 2} more
-                        </span>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -677,10 +697,10 @@ function MyComponent() {
           ) : (
             <div className="text-center py-12 px-6 bg-white/90 dark:bg-gray-800/90 rounded-2xl shadow-lg max-w-2xl">
               <div className="text-6xl mb-6">🌱</div>
-              <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-3">No plants found</h3>
-              <p className="text-gray-600 dark:text-gray-300">
+              <div className="text-xl font-medium text-gray-900 dark:text-white mb-3">No plants found</div>
+              <div className="text-gray-600 dark:text-gray-300">
                 Try adjusting your filters to find your perfect plant match
-              </p>
+              </div>
             </div>
           )}
         </div>
@@ -688,78 +708,92 @@ function MyComponent() {
 
       {showPlantModal && selectedPlant && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4 overflow-y-auto"
           onClick={closeModal}
         >
           <div
-            className="bg-white/90 dark:bg-gray-800/90 rounded-3xl max-w-4xl w-full shadow-2xl relative"
+            className="bg-white/90 dark:bg-gray-800/90 rounded-2xl sm:rounded-3xl w-full max-w-xs sm:max-w-lg md:max-w-2xl lg:max-w-4xl shadow-2xl relative my-4"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
-              className="absolute top-4 right-4 z-10 bg-white/80 dark:bg-gray-800/80 rounded-full p-2 hover:bg-white dark:hover:bg-gray-800 transition-colors duration-200"
+            <div
+              className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 bg-white/80 dark:bg-gray-800/80 rounded-full p-1.5 sm:p-2 hover:bg-white dark:hover:bg-gray-800 transition-colors duration-200"
               onClick={closeModal}
             >
-              <X className="h-6 w-6 text-gray-700 dark:text-gray-200" />
-            </button>
+              <X className="h-5 w-5 sm:h-6 sm:w-6 text-gray-700 dark:text-gray-200" />
+            </div>
 
             <div className="flex flex-col md:flex-row">
-              <div className="relative h-64 md:h-auto md:w-1/2">
+              {/* Image Container */}
+              <div className="relative h-56 xs:h-64 sm:h-72 md:h-auto md:w-1/2">
                 <img
                   src={selectedPlant.image || "/placeholder.svg"}
                   alt={selectedPlant.name}
-                  className="w-full h-full object-cover rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none"
+                  className="w-full h-full object-cover rounded-t-2xl sm:rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 md:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-50 md:opacity-100 transition-opacity duration-300 rounded-bl-3xl"></div>
+
+                {/* Mobile-only name overlay */}
+                <div className="md:hidden absolute bottom-0 left-0 right-0 p-4">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{selectedPlant.name}</h2>
+                  <div className="inline-block mt-2 px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 text-sm">
+                    {selectedPlant.difficulty}
+                  </div>
+                </div>
               </div>
 
-              <div className="p-8 md:w-1/2 overflow-y-auto max-h-[80vh] md:max-h-[600px]">
-                <div className="flex justify-between items-start mb-6">
-                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white">{selectedPlant.name}</h2>
-                  <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
+              {/* Content Container */}
+              <div className="p-4 sm:p-6 md:p-8 md:w-1/2 overflow-y-auto max-h-[60vh] md:max-h-[70vh] lg:max-h-[600px]">
+                {/* Desktop title - hidden on mobile */}
+                <div className="hidden md:flex justify-between items-start mb-6">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">{selectedPlant.name}</h2>
+                  <div className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300">
                     {selectedPlant.difficulty}
-                  </span>
+                  </div>
                 </div>
 
-                <p className="mb-6 text-gray-600 dark:text-gray-300 leading-relaxed">{selectedPlant.description}</p>
+                <div className="mb-4 sm:mb-6 text-gray-600 dark:text-gray-300 text-sm sm:text-base leading-relaxed">
+                  {selectedPlant.description}
+                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
                   <div>
-                    <h3 className="text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-2">
+                    <div className="text-xs sm:text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-1 sm:mb-2">
                       Light Requirements
-                    </h3>
-                    <p className="text-gray-600 dark:text-gray-300">{selectedPlant.lightRequirements}</p>
+                    </div>
+                    <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300">{selectedPlant.lightRequirements}</div>
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-2">Watering</h3>
-                    <p className="text-gray-600 dark:text-gray-300">{selectedPlant.waterRequirements}</p>
+                    <div className="text-xs sm:text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-1 sm:mb-2">
+                      Watering
+                    </div>
+                    <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300">{selectedPlant.waterRequirements}</div>
                   </div>
                 </div>
 
-                <div className="mb-8">
-                  <h3 className="text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-3">Benefits</h3>
-                  <div className="flex flex-wrap gap-2">
+                <div className="mb-6 sm:mb-8">
+                  <div className="text-xs sm:text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-2 sm:mb-3">Benefits</div>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {selectedPlant.benefits.map((benefit, index) => (
-                      <span
+                      <div
                         key={index}
-                        className="inline-flex items-center rounded-full bg-indigo-50 dark:bg-indigo-900/50 px-3 py-1.5 text-sm font-medium text-indigo-700 dark:text-indigo-300"
+                        className="inline-flex items-center rounded-full bg-indigo-50 dark:bg-indigo-900/50 px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium text-indigo-700 dark:text-indigo-300"
                       >
                         {benefit}
-                      </span>
+                      </div>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-3">Care Instructions</h3>
-                  <ol className="space-y-2">
+                  <div className="text-xs sm:text-sm font-medium text-indigo-700 dark:text-indigo-300 mb-2 sm:mb-3">Care Instructions</div>
+                  <ol className="space-y-1.5 sm:space-y-2">
                     {selectedPlant.careInstructions.map((instruction, index) => (
                       <li key={index} className="flex items-start">
-                        <div className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-1">
+                        <div className="flex-shrink-0 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center mt-0.5">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 text-indigo-600 dark:text-indigo-400"
+                            className="h-3 w-3 sm:h-4 sm:w-4 text-indigo-600 dark:text-indigo-400"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -767,7 +801,7 @@ function MyComponent() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                         </div>
-                        <p className="text-gray-600 dark:text-gray-300 ml-3">{instruction}</p>
+                        <div className="text-sm sm:text-base text-gray-600 dark:text-gray-300 ml-2 sm:ml-3">{instruction}</div>
                       </li>
                     ))}
                   </ol>
