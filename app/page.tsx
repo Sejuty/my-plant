@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Clock, Droplets, RefreshCcw } from "lucide-react"
+import { Clock, Droplets, RefreshCcw, X } from "lucide-react"
 import { Search, Heart, Edit } from "lucide-react"
 import { Filter, Menu, DoorClosedIcon as CloseIcon, Home } from "lucide-react"
 import { Alice } from "next/font/google"
@@ -894,7 +894,7 @@ export default function BotaniqApp() {
             </div>
             <input
               type="text"
-              className="block w-full pl-10 pr-3 py-2 border border-[#83C5BE] rounded-xl bg-white/90 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-[#006D77] focus:border-transparent text-sm"
+              className="block w-full pl-10 pr-3 py-2 border border-[#83C5BE] rounded-xl bg-white/90 text-gray-900 placeholder-gray-400 focus:outline-none  text-sm"
               placeholder="Search plants..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -1177,7 +1177,7 @@ export default function BotaniqApp() {
 
           {/* Plants Grid */}
           {displayPlantsToShow().length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full relative z-0">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6 w-full relative z-0">
               {displayPlantsToShow().map((plant) => (
                 <div
                   key={plant.name}
@@ -1209,7 +1209,7 @@ export default function BotaniqApp() {
                   <div className="p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div className="text-2xl font-bold text-gray-900">{plant.name}</div>
-                      <div className="text-sm font-medium px-3 py-1 rounded-full bg-[#83C5BE] text-[#006D77]">
+                      <div className="text-sm font-medium px-3 py-1 rounded-full bg-[#83C5BE] text-[#006D77] truncate mx-3">
                         {plant.difficulty}
                       </div>
                     </div>
@@ -1337,7 +1337,7 @@ export default function BotaniqApp() {
                 {/* Mobile-only name overlay */}
                 <div className="md:hidden absolute bottom-0 left-0 right-0 p-4">
                   <h2 className="text-2xl sm:text-3xl font-bold text-white">{selectedPlant.name}</h2>
-                  <div className="inline-block mt-2 px-3 py-1 rounded-full bg-[#83C5BE] text-[#006D77] text-sm">
+                  <div className="inline-block mt-2 px-3 py-1 rounded-full bg-[#83C5BE] text-[#006D77] text-sm truncate mx-3">
                     {selectedPlant.difficulty}
                   </div>
                 </div>
@@ -1360,7 +1360,7 @@ export default function BotaniqApp() {
                 {/* Desktop title - hidden on mobile */}
                 <div className="hidden md:flex justify-between items-start mb-6">
                   <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{selectedPlant.name}</h2>
-                  <div className="px-3 py-1 rounded-full bg-[#83C5BE] text-[#006D77]">{selectedPlant.difficulty}</div>
+                  <div className="px-3 py-1 rounded-full bg-[#83C5BE] text-[#006D77] truncate mx-3">{selectedPlant.difficulty}</div>
                 </div>
 
                 <div className="mb-4 sm:mb-6 text-gray-600 text-sm sm:text-base leading-relaxed">
