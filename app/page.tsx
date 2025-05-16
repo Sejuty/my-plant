@@ -782,6 +782,10 @@ export default function BotaniqApp() {
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle sidebar</span>
               </button>
+              <div className="ml-4">
+                <div className="text-lg font-thin text-gray-900 tracking-wider">BotaniQ</div>
+                <div className="text-xs text-gray-600 italic">Find your perfect plant match</div>
+              </div>
             </div>
 
             {/* Logo and Title - Desktop */}
@@ -1511,25 +1515,25 @@ export default function BotaniqApp() {
                   ) : (
                     <div className="flex flex-wrap gap-2">
                       <button
-                        className="px-3 py-1.5 text-sm bg-[#83C5BE] text-[#006D77] rounded-lg hover:bg-[#83C5BE]/80 transition-colors"
+                        className="px-3 py-1.5 text-sm bg-[#006D77] text-[#EDF6F9] rounded-lg hover:bg-[#83C5BE]/80 hover:text-black cursor-pointer transition-colors"
                         onClick={(e) => startTimer(selectedPlant.name, 5, e)}
                       >
                         5 Minutes
                       </button>
                       <button
-                        className="px-3 py-1.5 text-sm bg-[#83C5BE] text-[#006D77] rounded-lg hover:bg-[#83C5BE]/80 transition-colors"
+                        className="px-3 py-1.5 text-sm bg-[#006D77] text-[#EDF6F9] rounded-lg hover:bg-[#83C5BE]/80 hover:text-black cursor-pointer transition-colors"
                         onClick={(e) => startTimer(selectedPlant.name, 30, e)}
                       >
                         30 Minutes
                       </button>
                       <button
-                        className="px-3 py-1.5 text-sm bg-[#83C5BE] text-[#006D77] rounded-lg hover:bg-[#83C5BE]/80 transition-colors"
+                        className="px-3 py-1.5 text-sm bg-[#006D77] text-[#EDF6F9] rounded-lg hover:bg-[#83C5BE]/80 hover:text-black cursor-pointer transition-colors"
                         onClick={(e) => startTimer(selectedPlant.name, 60, e)}
                       >
                         1 Hour
                       </button>
                       <button
-                        className="px-3 py-1.5 text-sm bg-[#83C5BE] text-[#006D77] rounded-lg hover:bg-[#83C5BE]/80 transition-colors"
+                        className="px-3 py-1.5 text-sm bg-[#006D77] text-[#EDF6F9] rounded-lg hover:bg-[#83C5BE]/80 hover:text-black cursor-pointer transition-colors"
                         onClick={(e) => startTimer(selectedPlant.name, 60 * 24, e)}
                       >
                         24 Hours
