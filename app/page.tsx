@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState, useEffect } from "react"
-import { Clock, Droplets, RefreshCcw, X } from "lucide-react"
+import { Clock, Droplets, RefreshCcw, SearchCheck, SearchIcon, X } from "lucide-react"
 import { Search, Heart, Edit } from "lucide-react"
 import { Filter, Menu, DoorClosedIcon as CloseIcon, Home } from "lucide-react"
 import { Alice } from "next/font/google"
@@ -803,11 +803,11 @@ export default function BotaniqApp() {
             <div className="hidden md:block flex-1 max-w-md mx-4">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-4 w-4 text-gray-400" />
+                  <SearchIcon className="h-4 w-4 text-gray-400" />
                 </div>
                 <input
                   type="text"
-                  className="block w-full pl-10 pr-3 py-2 border border-[#83C5BE] rounded-xl bg-white/90 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-[#006D77] focus:border-transparent text-sm"
+                  className="block w-full pl-10 pr-3 py-2 border border-[#83C5BE] rounded-xl bg-white/90 text-gray-900 placeholder-gray-400  focus:outline-[#83C5BE]  text-sm"
                   placeholder="Search plants..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -817,52 +817,58 @@ export default function BotaniqApp() {
                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                     onClick={() => setSearchQuery("")}
                   >
-                    <CloseIcon className="h-4 w-4 text-gray-400 hover:text-gray-600" />
+                    <X className="h-4 w-4 text-gray-400 hover:text-gray-600" />
                   </button>
                 )}
               </div>
             </div>
-            {/* Reminders Indicator - Desktop */}
-            <div className="hidden md:flex items-center">
-              {Object.keys(timers).length > 0 && (
+
+
+
+            {/* Nav Links - Desktop */}
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="hidden md:flex items-center cursor-pointer">
                 <div className="relative group">
                   <button className="flex items-center px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-[#EDF6F9] text-[#006D77]">
                     <Clock className="w-4 h-4 mr-1" />
-                    Reminders ({Object.keys(timers).length})
+                    Reminders {Object.keys(timers).length > 0 && `(${Object.keys(timers).length})`}
                   </button>
                   <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg overflow-hidden z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                     <div className="p-3 bg-[#EDF6F9] border-b border-[#83C5BE]">
                       <h3 className="text-sm font-medium text-[#006D77]">Active Reminders</h3>
                     </div>
-                    <div className="max-h-60 overflow-y-auto">
-                      {Object.entries(timers).map(([plantName, seconds]) => (
-                        <div
-                          key={plantName}
-                          className="flex justify-between items-center p-3 hover:bg-gray-50 border-b border-gray-100"
-                        >
-                          <div>
-                            <div className="font-medium text-sm">{plantName}</div>
-                            <div className="text-xs text-gray-500">{formatTime(seconds)}</div>
-                          </div>
-                          <button
-                            className="text-xs px-2 py-1 bg-red-100 text-red-600 rounded-full"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              clearTimer(plantName)
-                            }}
+                    {Object.keys(timers).length > 0 ? (
+                      <div className="max-h-60 overflow-y-auto">
+                        {Object.entries(timers).map(([plantName, seconds]) => (
+                          <div
+                            key={plantName}
+                            className="flex justify-between items-center p-3 hover:bg-gray-50 border-b border-gray-100"
                           >
-                            Cancel
-                          </button>
-                        </div>
-                      ))}
+                            <div>
+                              <div className="font-medium text-sm text-[#006D77]">{plantName}</div>
+                              <div className="text-xs text-gray-500">{formatTime(seconds)}</div>
+                            </div>
+                            <button
+                              className="text-xs px-2 py-1 bg-red-100 text-red-600 rounded-full"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                clearTimer(plantName)
+                              }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 text-center text-sm text-gray-500">No active reminders</div>
+                    )}
+                    <div className="p-2 bg-gray-50 border-t border-gray-100">
+                      <div className="text-xs text-gray-500 text-center">Set reminders from any plant card</div>
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
-
-            {/* Nav Links - Desktop */}
-            <div className="hidden md:flex items-center space-x-4">
+              </div>
               <a
                 href="#all"
                 className="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-[#EDF6F9] text-[#006D77]"
@@ -894,11 +900,11 @@ export default function BotaniqApp() {
         <div className="md:hidden px-4 pb-3">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-4 w-4 text-gray-400" />
+              <X className="h-4 w-4 text-gray-400" />
             </div>
             <input
               type="text"
-              className="block w-full pl-10 pr-3 py-2 border border-[#83C5BE] rounded-xl bg-white/90 text-gray-900 placeholder-gray-400 focus:outline-none  text-sm"
+              className="block w-full pl-10 pr-3 py-2 border border-[#83C5BE] rounded-xl bg-white/90 text-gray-900 placeholder-gray-400 focus:outline-[#006D77] focus:border-[#006D77] text-sm"
               placeholder="Search plants..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -939,6 +945,23 @@ export default function BotaniqApp() {
             Favorites ({favorites.length})
           </a>
         </div>
+        {/* Mobile Reminders */}
+        {Object.keys(timers).length > 0 && (
+          <div className="md:hidden flex items-center justify-center px-4 pb-3">
+            <button
+              className="w-full px-3 py-1.5 rounded-lg text-sm font-medium bg-[#EDF6F9] text-[#006D77] flex items-center justify-center"
+              onClick={() => {
+                const remindersList = Object.entries(timers)
+                  .map(([name, seconds]) => `${name}: ${formatTime(seconds)}`)
+                  .join("\n")
+                alert(`Active Reminders:\n\n${remindersList}`)
+              }}
+            >
+              <Clock className="w-4 h-4 mr-1" />
+              View Reminders ({Object.keys(timers).length})
+            </button>
+          </div>
+        )}
       </nav>
 
       <div className="flex">
@@ -963,7 +986,7 @@ export default function BotaniqApp() {
                 {feelings.map((feeling) => (
                   <button
                     key={feeling.name}
-                    className={`px-3 py-2 text-sm rounded-lg transition-colors ${selectedFeeling === feeling.name
+                    className={`px-3 py-2 text-sm rounded-lg transition-colors cursor-pointer ${selectedFeeling === feeling.name
                       ? "bg-[#006D77] text-white font-medium"
                       : "bg-white text-gray-700 hover:bg-[#EDF6F9] border border-[#83C5BE]/30"
                       }`}
@@ -982,7 +1005,7 @@ export default function BotaniqApp() {
                 {weatherConditions.map((weather) => (
                   <button
                     key={weather.name}
-                    className={`px-3 py-2 text-sm rounded-lg transition-colors ${selectedWeather === weather.name
+                    className={`px-3 py-2 text-sm rounded-lg transition-colors cursor-pointer ${selectedWeather === weather.name
                       ? "bg-[#006D77] text-white font-medium"
                       : "bg-white text-gray-700 hover:bg-[#EDF6F9] border border-[#83C5BE]/30"
                       }`}
@@ -997,7 +1020,7 @@ export default function BotaniqApp() {
             {/* Difficulty Filter */}
             <div className="bg-white/80 rounded-xl shadow-sm p-5 border border-[#83C5BE]/20">
               <h3 className="text-lg font-medium mb-3 text-[#006D77] flex items-center">Difficulty Level</h3>
-              <div className="space-y-2">
+              <div className="space-y-2 cursor-pointer">
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -1040,7 +1063,7 @@ export default function BotaniqApp() {
             {/* Sort Options */}
             <div className="bg-white/80 rounded-xl shadow-sm p-5 border border-[#83C5BE]/20">
               <h3 className="text-lg font-medium mb-3 text-[#006D77] flex items-center">Sort By</h3>
-              <div className="space-y-2">
+              <div className="space-y-2 cursor-pointer">
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="radio"
@@ -1079,29 +1102,6 @@ export default function BotaniqApp() {
                 </label>
               </div>
             </div>
-
-            {/* Active Timers */}
-            {Object.keys(timers).length > 0 && (
-              <div className="bg-white/80 rounded-xl shadow-sm p-5 border border-[#83C5BE]/20">
-                <h3 className="text-lg font-medium mb-3 text-[#006D77] flex items-center">Active Reminders</h3>
-                <div className="space-y-3 max-h-64 overflow-y-auto">
-                  {Object.entries(timers).map(([plantName, seconds]) => (
-                    <div key={plantName} className="flex justify-between items-center p-2 bg-[#EDF6F9] rounded-lg">
-                      <div>
-                        <div className="font-medium text-sm">{plantName}</div>
-                        <div className="text-xs text-gray-500">{formatTime(seconds)}</div>
-                      </div>
-                      <button
-                        className="text-xs px-2 py-1 bg-red-100 text-red-600 rounded-full"
-                        onClick={() => clearTimer(plantName)}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
 
             {/* Reset Filters Button */}
             <div className="flex justify-center">
